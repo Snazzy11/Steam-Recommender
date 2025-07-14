@@ -1,3 +1,7 @@
+"""
+Provides the connection to the Steam API. Also provides functions to fetch from the Steam API
+"""
+
 import os
 import json
 
