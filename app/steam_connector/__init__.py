@@ -1,9 +1,9 @@
 import os
+import json
 
 from dotenv import load_dotenv
 
 import requests
-import json
 
 load_dotenv()
 steam_api_key = os.getenv('STEAM_API_KEY')
@@ -22,9 +22,6 @@ class ApiItem:
         self.data = json.loads(json_data_string)
         self.pretty_json = json.dumps(self.data, indent=2)
 
-        hi = 'hello'
-
-
     def __str__(self):
         return self.str_raw_json
 
@@ -36,7 +33,8 @@ class SteamApi:
     The functions will return Python objects which will have their own data and methods to process them
     """
 
-    url_GetOwnedGames = 'http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=' + steam_api_key + '&steamid=' + '%PLAYERID%' + '&format=json'
+    url_GetOwnedGames = ('http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=' + steam_api_key +
+                         '&steamid=' + '%PLAYERID%' + '&format=json')
 
     def player_get_owned_games(self, player_id: str) -> json:
         """
@@ -46,7 +44,7 @@ class SteamApi:
 
         url = self.url_GetOwnedGames.replace('%PLAYERID%', player_id)
 
-        response = requests.get(url)
+        response = requests.get(url, timeout=5)
         return ApiItem(response.text)
 
 
