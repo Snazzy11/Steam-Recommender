@@ -1,4 +1,5 @@
 # Steam Game Recommender
+(This project is in very early stages)
 Project which will search one's steam library and provide a recommendation for their next game.
 
 ## Development Tools
