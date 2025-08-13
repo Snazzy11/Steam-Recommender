@@ -13,6 +13,7 @@ from app.steam_connector.responses.player_owned_games_response import PlayerGetO
 load_dotenv()
 steam_api_key = os.getenv('STEAM_API_KEY')
 
+# TODO: This class is likely redundant. Could easily pull it up to file level
 class SteamApi:
     """
     Provides the connection to the Steam API. Also provides functions to fetch from the Steam API
@@ -24,14 +25,15 @@ class SteamApi:
 
     def get_owned_games(self, player_id: str | int) -> PlayerGetOwnedGamesResponse:
         """
-        Queries the Steam API for games owned by a player
-        :method: IPlayerService
+        Queries the Steam API for games owned by a player.
+        Method: IPlayerService
         :param player_id: Numerical player ID
         :return: Response object
         """
-        # TODO: If player id doesnt look like it correctly exists, throw an error
+        # TODO: If player id doesnt look like it exists or is invalid, throw an error
         url = (f'http://api.steampowered.com/IPlayerService/GetOwnedGames/v1/'
-               f'?key={self.api_key}&steamid={str(player_id)}&format=json')
+               f'?key={self.api_key}&steamid={str(player_id)}' + '&include_appinfo=true'
+               f'&format=json')
         try:
             response = requests.get(url, timeout=5)
             response.raise_for_status()
@@ -42,8 +44,8 @@ class SteamApi:
     def get_game_stats(self, player_id: str | int, game_id: str | int,
                        date_range_start='2000-01-01', date_range_end='2030-01-01') -> BaseResponse:
         """
-        Queries the Steam API for game statistics for a plyaer on a specific game
-        :method: ISteamGameServerStats
+        Queries the Steam API for game statistics for a player on a specific game.
+        Method: ISteamGameServerStats
         :param player_id: Numerical player ID
         :param game_id: Numerical game or APP ID (has specific logic but should usually be unnecessary)
         :param date_range_start: Format YYYY-MM-DD HH:MM:SS the starting date to query

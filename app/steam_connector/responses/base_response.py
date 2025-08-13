@@ -5,10 +5,18 @@ from abc import ABC, abstractmethod
 import json
 from types import SimpleNamespace
 
+
 class BaseResponse(ABC):
     """
     Abstract response class for queries to API
     """
+    raw_json: str
+    pretty_json: str
+    error: str
+    success: bool
+    # Data is the Python object version
+    data: SimpleNamespace  # TODO: Please refresh on wtf Simplenamespace does or why I have it
+
     def __init__(self, json_data_string='', error=None) -> None:
         """
         Initialize the base response values
@@ -22,7 +30,9 @@ class BaseResponse(ABC):
         self.pretty_json = ''
         if self.success:
             try:
-                self.data = json.loads(json_data_string, object_hook=lambda d: SimpleNamespace(**d))
+                self.data = json.loads(json_data_string,
+                                       object_hook=lambda d: SimpleNamespace(**d))
+                                        # TODO: Simple namespace, lambda?? I forgot what these do but it works
                 self.pretty_json = json.dumps(json.loads(json_data_string), indent=2)
             except json.JSONDecodeError as e:
                 self.success = False
@@ -32,16 +42,4 @@ class BaseResponse(ABC):
     def __str__(self):
         return self.pretty_json if self.success else f"<Error: {self.error}>"
 
-"""
-self
-    data
-        response
-            game_count: int
-            games: {
-                000: ...
-                001: {
-                    appid: int
-                    etc.
-                }
-            }
-"""
+    # TODO: Define abstract/interface method to serialize into objects?
